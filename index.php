@@ -1,10 +1,15 @@
 <?php
 Class Bombilla{
 	public $estado;
+	private $conn;
 	// modelo
-	function __construct($n){
-		for($i=0;$i<$n;$i++)
-			$this->estado[$i]='off';
+	function __construct(){
+		$this->conn=new mysqli('localhost','root','','db2019');
+		$r=$this->conn->query("
+			SELECT * FROM bombillas;
+		")->fetch_all(MYSQLI_ASSOC);
+		foreach($r as $i=>$bombilla)
+			$this->estado[$bombilla['id_bombilla']]=$bombilla['estado'];
 	}
 	function cambia(){
 		foreach($this->estado as $i=>$estado){
@@ -12,6 +17,10 @@ Class Bombilla{
 				if($estado=='off')
 					$this->estado[$i]='on';
 				else $this->estado[$i]='off';
+				$this->conn->query("
+					UPDATE bombillas SET estado='".$this->estado[$i]."'
+						WHERE id_bombilla=".$i."
+				");
 			}
 		}
 	}	
@@ -27,20 +36,11 @@ Class Bombilla{
 		return $txt;
 	}
 }
-// sesión
-session_start();
-if(isset($_GET['salir'])){
-	session_destroy();
-	session_start();
-}
 // controlador
 if(isset($_SESSION['b']))
 	$b=$_SESSION['b'];
-else $b=new Bombilla(5);
+else $b=new Bombilla();
 if( isset($_GET['cambia']) )
 	$b->cambia();
 echo $b->muestra();
-// sesión
-$_SESSION['b']=$b;
-echo '<a href="?salir=1">Cerrar</a>';
 ?>
