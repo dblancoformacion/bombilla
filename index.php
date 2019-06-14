@@ -3,11 +3,8 @@ Class Bombilla{
 	public $estado;
 	// modelo
 	function __construct($n){
-		for($i=0;$i<$n;$i++){
+		for($i=0;$i<$n;$i++)
 			$this->estado[$i]='off';
-			if(isset($_GET['estados'][$i]))
-				$this->estado[$i]=$_GET['estados'][$i];
-		}
 	}
 	function cambia(){
 		foreach($this->estado as $i=>$estado){
@@ -21,23 +18,29 @@ Class Bombilla{
 	// vista
 	function muestra(){
 		$txt=null;
-		$url=null;
-		foreach($this->estado as $i=>$estado){
-			$url.='&estados[]='.$estado;
-		}
-		foreach($this->estado as $i=>$estado){
+		foreach($this->estado as $i=>$estado)
 			$txt.='
-				<a href="?cambia='.$i.$url.'">
+				<a href="?cambia='.$i.'">
 					<img src="bombilla_'.$estado.'.jpg" style="height:200px"/>
 				</a>
 			';
-		}			
 		return $txt;
 	}
 }
+// sesión
+session_start();
+if(isset($_GET['salir'])){
+	session_destroy();
+	session_start();
+}
 // controlador
-$b=new Bombilla(5);
+if(isset($_SESSION['b']))
+	$b=$_SESSION['b'];
+else $b=new Bombilla(5);
 if( isset($_GET['cambia']) )
 	$b->cambia();
 echo $b->muestra();
+// sesión
+$_SESSION['b']=$b;
+echo '<a href="?salir=1">Cerrar</a>';
 ?>
