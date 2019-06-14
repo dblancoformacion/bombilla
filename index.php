@@ -18,8 +18,10 @@ Class Bombilla{
 }
 // controlador
 $b=new Bombilla();
-if( isset($_GET['on']) )
-	echo $b->on();
-else 
-	echo $b->off();
+for($i=0;$i<5;$i++){
+	if( isset($_GET['on']) )
+		echo $b->on();
+	else
+		echo $b->off();
+}
 ?>
