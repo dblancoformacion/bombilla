@@ -1,5 +1,11 @@
 <?php
 Class Bombilla{
+	public $id;
+	public $estado=0;
+	// modelo
+	function __construct($i){
+		$this->id=$i;
+	}
 	// vista
 	function on(){
 		return '
@@ -17,11 +23,11 @@ Class Bombilla{
 	}	
 }
 // controlador
-$b=new Bombilla();
 for($i=0;$i<5;$i++){
+	$b[$i]=new Bombilla($i);
 	if( isset($_GET['on']) )
-		echo $b->on();
+		echo $b[$i]->on();
 	else
-		echo $b->off();
+		echo $b[$i]->off();
 }
 ?>
